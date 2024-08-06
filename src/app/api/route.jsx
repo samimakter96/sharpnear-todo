@@ -24,3 +24,16 @@ export async function POST(request) {
   return NextResponse.json({msg: 'Todo Created'})
 }
 
+
+export async function PUT(request) {
+
+  const mongoId = await request.nextUrl.searchParams.get('mongoId')
+  await TodoModel.findByIdAndUpdate(mongoId, {
+    $set: {
+      isCompleted: true
+    }
+  })
+
+  return NextResponse.json({msg: 'Todo Completed'})
+  
+}

@@ -8,41 +8,45 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Home = () => {
   const [inputData, setInputData] = useState({
-    title: ''
-  }); 
-  const [todoData, setTodoData] = useState([]); 
-  console.log(todoData)
+    title: "",
+  });
+  const [todoData, setTodoData] = useState([]);
+  console.log(todoData);
 
   const fetchTodos = async () => {
-    const response = await axios.get('/api')
-    setTodoData(response.data.todos)
-
-  }
+    const response = await axios.get("/api");
+    setTodoData(response.data.todos);
+  };
 
   // because i want this function to be executed only first time, when the webpage is loaded
   useEffect(() => {
-    fetchTodos()
-  }, [])
+    fetchTodos();
+  }, []);
 
+  const completeTodo = async (id) => {
+    const response = await axios.put("/api", {}, { params: { mongoId: id } });
+    toast.success(response.data.msg);
+    fetchTodos();
+  };
 
   const onChangeHandler = (e) => {
-    const {name, value} = e.target;
-    setInputData({...inputData, [name]: value})
-  }
+    const { name, value } = e.target;
+    setInputData({ ...inputData, [name]: value });
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
       // api code
-      const response = await axios.post('/api', inputData)
-      toast.success(response.data.msg)
+      const response = await axios.post("/api", inputData);
+      toast.success(response.data.msg);
       // clear the input fields
-      setInputData({title: ''})
+      setInputData({ title: "" });
       // fetch the updated todos
-      await fetchTodos()
+      await fetchTodos();
     } catch (error) {
-      toast.error("Failed to add todo")
+      toast.error("Failed to add todo");
     }
   };
 
@@ -84,20 +88,20 @@ const Home = () => {
         </div>
       </form>
 
-      <div className="relative overflow-x-auto mt-24 w-[60%] mx-auto">
+      <div className="relative overflow-x-auto mt-24 w-[50%] mx-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-600 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">
                 SI NO
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-8 py-3">
                 Todo
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-8 py-3">
                 Status
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-12 py-3">
                 Action
               </th>
             </tr>
@@ -105,7 +109,14 @@ const Home = () => {
           <tbody>
             {todoData.map((item, index) => {
               return (
-                <Todo key={index} id={index} title={item.title} complete={item.isCompleted} mongoId={item._id}/>
+                <Todo
+                  key={index}
+                  id={index}
+                  title={item.title}
+                  complete={item.isCompleted}
+                  mongoId={item._id}
+                  completeTodo={completeTodo}
+                />
               );
             })}
           </tbody>
