@@ -1,23 +1,67 @@
 "use client";
 
 import Todo from "@/components/Todo";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Home = () => {
-  const [inputData, setInputData] = useState(""); // To handle the current input value
-  const [todos, setTodos] = useState([]); // To handle the list of todos
+  const [inputData, setInputData] = useState({
+    title: ''
+  }); 
+  const [todoData, setTodoData] = useState([]); 
+  console.log(todoData)
 
-  const submitHandler = (e) => {
+  const fetchTodos = async () => {
+    const response = await axios.get('/api')
+    setTodoData(response.data.todos)
+
+  }
+
+  // because i want this function to be executed only first time, when the webpage is loaded
+  useEffect(() => {
+    fetchTodos()
+  }, [])
+
+
+  const onChangeHandler = (e) => {
+    const {name, value} = e.target;
+    setInputData({...inputData, [name]: value})
+  }
+
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    if (inputData !== "") {
-      setTodos([...todos, inputData]);
-      setInputData(""); // clear the input field
+    try {
+      // api code
+      const response = await axios.post('/api', inputData)
+      toast.success(response.data.msg)
+      // clear the input fields
+      setInputData({title: ''})
+      // fetch the updated todos
+      await fetchTodos()
+    } catch (error) {
+      toast.error("Failed to add todo")
     }
   };
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
+
       <form
         onSubmit={submitHandler}
         className="max-w-lg mx-auto mt-10 bg-white p-6 rounded-lg shadow-md"
@@ -27,8 +71,8 @@ const Home = () => {
             type="text"
             name="title"
             placeholder="Enter Todo"
-            value={inputData}
-            onChange={(e) => setInputData(e.target.value)}
+            value={inputData.title}
+            onChange={onChangeHandler}
             className="flex-grow px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
@@ -59,9 +103,9 @@ const Home = () => {
             </tr>
           </thead>
           <tbody>
-            {todos.map((item, index) => {
+            {todoData.map((item, index) => {
               return (
-                <Todo key={index} id={index} title={item} complete={false} />
+                <Todo key={index} id={index} title={item.title} complete={item.isCompleted} mongoId={item._id}/>
               );
             })}
           </tbody>

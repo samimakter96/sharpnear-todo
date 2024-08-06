@@ -1,4 +1,4 @@
-const Todo = ({ id, title, complete }) => {
+const Todo = ({ id, title, complete, mongoId }) => {
   return (
     <tr className="bg-white border dark:border-gray-700">
       <th
@@ -7,8 +7,16 @@ const Todo = ({ id, title, complete }) => {
       >
         {id + 1}
       </th>
-      <td className={`text-black font-semibold px-6 py-4 ${complete ? "line-through" : ""}`}>{title}</td>
-      <td className="text-black px-6 py-4">{complete ? "Completed" : "Pending"}</td>
+      <td
+        className={`text-black font-semibold px-6 py-4 ${
+          complete ? "line-through" : ""
+        }`}
+      >
+        {title}
+      </td>
+      <td className="text-black px-6 py-4">
+        {complete ? "Completed" : "Pending"}
+      </td>
       <td className="px-6 py-4 flex gap-2">
         <button className="py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-md font-semibold transition ease-in-out duration-200">
           Delete
