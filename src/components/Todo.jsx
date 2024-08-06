@@ -1,4 +1,4 @@
-const Todo = ({ id, title, complete, mongoId, completeTodo }) => {
+const Todo = ({ id, title, complete, mongoId, completeTodo, deleteTodo }) => {
   return (
     <tr className="bg-white border dark:border-gray-700">
       <th
@@ -18,13 +18,19 @@ const Todo = ({ id, title, complete, mongoId, completeTodo }) => {
         {complete ? "Completed" : "Pending"}
       </td>
       <td className=" px-6 py-4 flex gap-2">
-        <button className="py-2 px-4 bg-red-500 hover:bg-red-700 text-white rounded-md font-semibold transition ease-in-out duration-200">
+        <button
+          onClick={() => deleteTodo(mongoId)}
+          className="py-2 px-4 bg-red-500 hover:bg-red-700 text-white rounded-md font-semibold transition ease-in-out duration-200"
+        >
           Delete
         </button>
         {complete ? (
           ""
         ) : (
-          <button onClick={() => completeTodo(mongoId)} className="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md font-semibold transition ease-in-out duration-200">
+          <button
+            onClick={() => completeTodo(mongoId)}
+            className="py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md font-semibold transition ease-in-out duration-200"
+          >
             Done
           </button>
         )}
