@@ -12,13 +12,31 @@ LoadDB();
 
 // Handle GET requests to fetch todos
 export async function GET(request) {
-  const incompleteOnly = request.nextUrl.searchParams.get("incompleteOnly"); // Get query parameter to check if only incomplete todos should be fetched
+  // Retrieve the value of the "incompleteOnly" query parameter from the request URL
+  const incompleteOnly = request.nextUrl.searchParams.get("incompleteOnly");
+
+  // Retrieve the value of the "completedOnly" query parameter from the request URL
+  const completedOnly = request.nextUrl.searchParams.get("completedOnly");
+
+  // Initialize an empty query object
   let query = {};
+
+  // Check if "incompleteOnly" query parameter is set to "true"
   if (incompleteOnly === "true") {
-    query = { isCompleted: false }; // Set query to fetch only incomplete todos
+    // If true, set the query to find todos where "isCompleted" is false
+    query = { isCompleted: false };
+  } 
+  // Check if "completedOnly" query parameter is set to "true"
+  else if (completedOnly === "true") {
+    // If true, set the query to find todos where "isCompleted" is true
+    query = { isCompleted: true };
   }
-  const todos = await TodoModel.find(query); // Fetch todos from the database based on the query
-  return NextResponse.json({ todos }); // Return the fetched todos as a JSON response
+
+  // Fetch todos from the database based on the constructed query
+  const todos = await TodoModel.find(query);
+
+  // Return the fetched todos as a JSON response
+  return NextResponse.json({ todos });
 }
 
 // Handle POST requests to create a new todo

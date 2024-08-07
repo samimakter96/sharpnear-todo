@@ -27,6 +27,13 @@ const Navbar = () => {
           </li>
           <li
             className={`text-white hover:text-gray-300 hover:border-b-2 hover:border-gray-300 ${
+              pathName === "/completed" ? "border-b-4 border-blue-500" : ""
+            }`}
+          >
+            <Link href="/completed">Completed</Link>
+          </li>
+          <li
+            className={`text-white hover:text-gray-300 hover:border-b-2 hover:border-gray-300 ${
               pathName === "/about" ? "border-b-4 border-blue-500" : ""
             }`}
           >
